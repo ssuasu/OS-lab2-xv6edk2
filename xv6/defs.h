@@ -120,6 +120,7 @@ void            userinit(void);
 int             wait(void);
 void            wakeup(void*);
 void            yield(void);
+int             uthread_init(int address); // address of the user-level scheduler
 
 // swtch.S
 void            swtch(struct context**, struct context*);
