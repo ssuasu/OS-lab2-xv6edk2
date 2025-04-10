@@ -27,6 +27,12 @@ sys_wait(void)
 }
 
 int
+sys_uthread_init(void)
+{
+  /*리턴 필요한디...?*/
+}
+
+int
 sys_kill(void)
 {
   int pid;
