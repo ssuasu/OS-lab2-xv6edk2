@@ -57,6 +57,8 @@ trap(struct trapframe *tf)
     }
     lapiceoi();
     //Add new code here
+    /*인터럽트 처리 끝낸 후?? 스위칭...만? 맞나?*/
+    thread_schedule();
     break;
   case T_IRQ0 + IRQ_IDE:
     ideintr();

@@ -33,8 +33,6 @@ struct context {
 };
 
 //XV6 프로세스 상태
-//embryo = initialized for new process,
-//sleeping = wait, runnable = ready
 enum procstate { UNUSED, EMBRYO, SLEEPING, RUNNABLE, RUNNING, ZOMBIE };
 
 // Per-process state
@@ -52,7 +50,7 @@ struct proc {
   struct file *ofile[NOFILE];  // Open files
   struct inode *cwd;           // Current directory
   char name[16];               // Process name (debugging)
-  uint scheduler;  // address of the user-level scheduler
+  uint scheduler;  // address of the user-level scheduler 추가.
 };
 
 // Process memory is laid out contiguously, low addresses first:

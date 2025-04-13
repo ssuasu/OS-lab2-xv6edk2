@@ -317,6 +317,26 @@ wait(void)
   }
 }
 
+//int uthread_init(int address){
+/*proc.c는 건드릴 필요 없어. 왜냐면 이미 uthread_init() 함수는 thread 관련 구현부에서 정의되어 있고, 
+거기에 우리가 이미 uthread_init(thread_schedule) 형태로 작성해뒀을 테니까!*/
+/*wait()는 자식 프로세스가 종료되길 기다리는 프로세스 레벨의 관리 함수야.
+이건 커널이 직접 책임지고 처리해야 하는 로직이라서 proc.c에서 구현하는 게 맞아.
+
+예: wait(), fork(), exit() 등은 모두 proc.c에 있어.
+
+즉, 전통적인 프로세스 관련 시스템 콜은 대부분 proc.c에서 정의돼.
+
+✅ uthread_init은 유저 스레드 관리 초기화 = 커널 깊은 곳(X)
+uthread_init()은 내부적으로 thread_schedule() 같은 유저 스레드 환경을 초기화하는 함수야.
+이건 커널 내의 thread.c 같은 유저 스레드 라이브러리 성격이고,
+이미 해당 로직은 별도 thread.c 같은 곳에 구현돼 있을 거야.
+
+그러니까 proc.c에는 넣을 필요도, 넣는 게 맞지도 않아.
+
+단지 sysproc.c에서 유저가 넘긴 함수 포인터를 받아서 uthread_init()을 호출만 해주면 끝나는 구조야.*/
+
+
 //PAGEBREAK: 42
 // Per-CPU process scheduler.
 // Each CPU calls scheduler() after setting itself up.
@@ -361,13 +381,11 @@ scheduler(void)
   }
 }
 
-// Enter scheduler.  Must hold only ptable.lock
-// and have changed proc->state. Saves and restores
-// intena because intena is a property of this
-// kernel thread, not this CPU. It should
-// be proc->intena and proc->ncli, but that would
-// break in the few places where a lock is held but
-// there's no process.
+// Enter scheduler.  
+// Must hold only ptable.lock and have changed proc->state. 
+// Saves and restores intena because intena is a property of this kernel thread, not this CPU. 
+// It should be proc->intena and proc->ncli, but that would break in the few places where a lock is held 
+// but there's no process.
 void
 sched(void)
 {

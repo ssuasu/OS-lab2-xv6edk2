@@ -26,11 +26,25 @@ sys_wait(void)
   return wait();
 }
 
+// sysproc.c
+
+extern void uthread_init(void (*func)());
+
 int
 sys_uthread_init(void)
 {
-  /*리턴 필요한디...?*/
+  int addr;
+
+  // 유저가 전달한 주소(함수 포인터)를 받아와서
+  if (argint(0, &addr) < 0)
+    return -1;
+
+  // 함수 포인터로 형변환하여 uthread_init 호출
+  uthread_init((void (*)())addr);
+
+  return 0;
 }
+
 
 int
 sys_kill(void)

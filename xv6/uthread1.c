@@ -2,6 +2,7 @@
 #include "stat.h"
 #include "user.h"
 
+// 스레드의 상태 세가지
 /* Possible states of a thread; */
 #define FREE        0x0
 #define RUNNING     0x1
@@ -18,6 +19,7 @@ struct thread {
   char stack[STACK_SIZE];       /* the thread's stack */
   int        state;             /* FREE, RUNNING, RUNNABLE */
 };
+
 static thread_t all_thread[MAX_THREAD];
 thread_p  current_thread;
 thread_p  next_thread;
@@ -79,12 +81,13 @@ thread_create(void (*func)())
   }
   t->sp = (int) (t->stack + STACK_SIZE);   // set sp to the top of the stack
   t->sp -= 4;                              // space for return address
-  * (int *) (t->sp) = (int)func;           // push return address on stack
+  * (int *) (t->sp) = (int)func;           // push return address on stack (스레드가 시작하면 func 함수 실행해야하니까.)
   t->sp -= 32;                             // space for registers that thread_switch expects
+  //context switching 할 때 레지스터 공간을 32byte 확보
   t->state = RUNNABLE;
 }
 
-static void 
+static void //그냥 100번 돌면서 출력해주는거
 mythread(void)
 {
   int i;
@@ -103,6 +106,6 @@ main(int argc, char *argv[])
   thread_init();
   thread_create(mythread);
   thread_create(mythread);
-  thread_schedule();
+  thread_schedule();  //
   return 0;
 }
