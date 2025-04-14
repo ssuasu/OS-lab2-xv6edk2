@@ -27,9 +27,7 @@ sys_wait(void)
 }
 
 // sysproc.c
-
-extern void uthread_init(void (*func)());
-
+/*
 int
 sys_uthread_init(void)
 {
@@ -40,8 +38,16 @@ sys_uthread_init(void)
     return -1;
 
   // 함수 포인터로 형변환하여 uthread_init 호출
-  uthread_init((void (*)())addr);
+  uthread_init(addr);
 
+  return 0;
+}*/
+
+int sys_uthread_init(void) {
+  int addr;
+  if (argint(0, &addr) < 0)
+    return -1;
+  myproc()->scheduler = addr;  // 저장함 ✅
   return 0;
 }
 

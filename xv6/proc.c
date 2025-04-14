@@ -273,6 +273,11 @@ exit(void)
   panic("zombie exit");
 }
 
+int
+uthread_init(int address){
+  return 0; //임시방편
+}
+
 // Wait for a child process to exit and return its pid.
 // Return -1 if this process has no children.
 int

@@ -1,6 +1,7 @@
 #include "types.h"
 #include "stat.h"
 #include "user.h"
+#include "uthread1.h"
 
 // 스레드의 상태 세가지
 /* Possible states of a thread; */
@@ -25,7 +26,7 @@ thread_p  current_thread;
 thread_p  next_thread;
 extern void thread_switch(void);
 
-static void 
+void 
 thread_schedule(void)
 {
   thread_p t;
@@ -60,7 +61,11 @@ thread_schedule(void)
 void 
 thread_init(void)
 {
-  uthread_init(thread_schedule);
+  uthread_init((int)thread_schedule);
+
+  for (int i = 0; i < MAX_THREAD; i++) {
+    all_thread[i].state = FREE;
+  }
 
   // main() is thread 0, which will make the first invocation to
   // thread_schedule().  it needs a stack so that the first thread_switch() can
@@ -71,6 +76,7 @@ thread_init(void)
   current_thread->state = RUNNING;
 }
 
+
 void 
 thread_create(void (*func)())
 {
@@ -78,6 +84,10 @@ thread_create(void (*func)())
 
   for (t = all_thread; t < all_thread + MAX_THREAD; t++) {
     if (t->state == FREE) break;
+  }
+  if (t == all_thread + MAX_THREAD) {
+    printf(2, "thread_create: no FREE thread slot available\n");
+    return;
   }
   t->sp = (int) (t->stack + STACK_SIZE);   // set sp to the top of the stack
   t->sp -= 4;                              // space for return address
@@ -97,6 +107,8 @@ mythread(void)
   }
   printf(1, "my thread: exit\n");
   current_thread->state = FREE;
+  thread_schedule();  // 스케줄러로 넘김
+  while (1);  // fallback
 }
 
 
