@@ -61,9 +61,7 @@ trap(struct trapframe *tf)
     //Add new code here
     /*인터럽트 처리 끝낸 후?? 스위칭...만? 맞나?*/ 
     // 유저 스케줄러 주소로 eip 세팅 ==다음 유저 공간으로 돌아갈 때 scheduler()부터 실행하라!
-    if (myproc() && myproc()->scheduler) {
-      myproc()->tf->eip = myproc()->scheduler;
-    }
+    scheduler();
     break;
   case T_IRQ0 + IRQ_IDE:
     ideintr();

@@ -273,10 +273,25 @@ exit(void)
   panic("zombie exit");
 }
 
-int
-uthread_init(int address){
-  return 0; //임시방편
+int uthread_init(int address) {
+  struct proc *curproc = myproc();
+
+  // 유저 스레드 스케줄러의 주소를 현재 프로세스의 scheduler 멤버에 저장
+  curproc->scheduler = address;
+
+  // 유저 스레드 라이브러리 초기화 (스레드 스택 할당 등)
+  // 예: 스레드 스택을 할당하는 코드 (스택 초기화 함수)
+  if (init_thread_stack(curproc) < 0) {
+      return -1;  // 스택 할당 실패 시 에러 처리
+  }
+
+  // 프로세스를 RUNNABLE 상태로 변경
+  curproc->state = RUNNABLE;
+
+  // 유저 스레드 실행 준비 완료
+  return 0;
 }
+
 
 // Wait for a child process to exit and return its pid.
 // Return -1 if this process has no children.

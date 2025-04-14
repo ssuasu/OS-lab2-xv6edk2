@@ -16,6 +16,7 @@ typedef struct thread thread_t, *thread_p;
 typedef struct mutex mutex_t, *mutex_p;
 
 struct thread {
+  int        stack_size;        /* 4 bytes for stack size */
   int        sp;                /* saved stack pointer */
   char stack[STACK_SIZE];       /* the thread's stack */
   int        state;             /* FREE, RUNNING, RUNNABLE */
@@ -65,6 +66,7 @@ thread_init(void)
 
   for (int i = 0; i < MAX_THREAD; i++) {
     all_thread[i].state = FREE;
+    all_thread[i].stack_size = STACK_SIZE;  // 스택 크기 설정
   }
 
   // main() is thread 0, which will make the first invocation to
@@ -116,6 +118,7 @@ int
 main(int argc, char *argv[]) 
 {
   thread_init();
+  printf(1, "thread_init complete\n");
   thread_create(mythread);
   thread_create(mythread);
   thread_schedule();  //
